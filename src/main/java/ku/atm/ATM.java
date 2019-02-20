@@ -89,6 +89,13 @@ public class ATM {
         return -1;
 	}
 
+	public double getOverdraft() {
+		if (state == TRANSACT) {
+			return currentAccount.getOverdraft();
+		}
+		return -1;
+	}
+
 	public void transfer(int customerNum, double amount) throws NotEnoughBalanceException {
         if (state == TRANSACT) {
             Customer receivingCustomer = theBank.findCustomer(customerNum);

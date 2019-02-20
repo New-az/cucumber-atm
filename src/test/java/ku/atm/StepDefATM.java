@@ -28,6 +28,10 @@ public class StepDefATM {
     public void a_customer_with_id_and_pin_with_balance_exists(int id, int pin, double balance) {
         bank.addCustomer(new Customer(id, pin, balance));
     }
+    @Given("a customer with id (.*) and pin (.*) with overdraft (.*) and balance (.*) exists")
+    public void a_customer_with_id_and_pin_with_balance_and_overdraft_exists(int id, int pin, double overdraft, double balance) {
+        bank.addCustomer(new Customer(id, pin, balance, overdraft));
+    }
 
     @When("I login to ATM with id (\\d+) and pin (\\d+)")
     public void i_login_to_ATM_with_id_and_pin(int id, int pin) {
@@ -51,12 +55,19 @@ public class StepDefATM {
 
     @When("I overdraw (.*) from ATM")
     public void i_withdraw_from_atm_more_than_balance(double amount) throws NotEnoughBalanceException {
+        System.out.println("amount");
         assertThrows(NotEnoughBalanceException.class,
                 () -> atm.withdraw(amount));
     }
     @Then("my account balance is (.*)")
     public void my_account_balance_is(double balance) {
         assertEquals(balance, atm.getBalance());
+    }
+
+    @Then("my account overdraft is (.*) and balance (.*)")
+    public void my_account_balance_and_overdraft_is(double overdraft,double balance){
+        assertEquals(balance,atm.getBalance());
+        assertEquals(overdraft,atm.getOverdraft());
     }
 
     @When("I transfer (.*) to customer id (\\d+)")
@@ -69,5 +80,4 @@ public class StepDefATM {
         assertEquals(balance,
                      bank.findCustomer(id).getAccount().getBalance());
     }
-
 }
